@@ -1,5 +1,25 @@
 import random
 import json
+import time
+
+
+def measure_exec_time(func):
+    """
+    A decorator to measure the execution time of a function.
+
+    Parameters:
+        func (Callable): The function whose execution time is to be measured.
+
+    Returns:
+        Callable: The wrapped function that includes time measurement.
+    """
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f"{func.__name__} took {end_time - start_time:.4f}s to run.")
+        return result
+    return wrapper
 
 
 def get_random_phone(country: str, prefix: bool = False) -> str:
@@ -11,7 +31,7 @@ def get_random_phone(country: str, prefix: bool = False) -> str:
         prefix (bool, optional): Flag to include the country's prefix. Defaults to True.
 
     Returns:
-    str: The randomly generated phone number.
+        str: The randomly generated phone number.
     """
     with open('phone_providers.json', 'r') as file:
         content = json.load(file)[country]
@@ -29,5 +49,13 @@ def get_random_phone(country: str, prefix: bool = False) -> str:
 
 
 if __name__ == "__main__":
+    # Demonstrating the usage of @measure_exec_time decorator.
+    @measure_exec_time
+    def test():
+        for i in range(0, 10000000):
+            continue
+    test()
+
+    # Demonstrating the usage of get_random_phone function.
     random_phone = get_random_phone(country="AT")
     print(random_phone)
